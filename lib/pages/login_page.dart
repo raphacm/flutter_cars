@@ -11,47 +11,69 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _body() {
+  Widget _body() {
     return Container(
       padding: EdgeInsets.all(16),
       child: ListView(
         children: [
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: "Login",
-              hintText: "Type your login",
-            ),
+          _textFormField(
+            "Login",
+            "Type your login",
+            callback: (value) => print(value),
           ),
           SizedBox(
             height: 20,
           ),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: "Password",
-              hintText: "Type your password",
-            ),
-            obscureText: true,
+          _textFormField(
+            "Password",
+            "Type your password",
+            isPassword: true,
+            callback: (value) => print(value),
           ),
           SizedBox(
             height: 20,
           ),
-          Container(
-            height: 46,
-            child: RaisedButton(
-              color: Colors.blue,
-              child: Text(
-                "Login",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                ),
-              ),
-              onPressed: () {
-                print("I was clicked");
-              },
-            ),
-          )
+          _button("Login", onClick: () => print("I was clicked"))
         ],
+      ),
+    );
+  }
+
+  TextFormField _textFormField(
+    String label,
+    String hint, {
+    bool isPassword = false,
+    Function callback,
+  }) {
+    return TextFormField(
+      onChanged: (value) => callback(value),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+      ),
+      obscureText: isPassword,
+    );
+  }
+
+  Container _button(
+    String label, {
+    Color color = Colors.blue,
+    Function onClick,
+  }) {
+    return Container(
+      height: 46,
+      child: RaisedButton(
+        color: color,
+        child: Text(
+          label,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+          ),
+        ),
+        onPressed: () {
+          onClick();
+        },
       ),
     );
   }
