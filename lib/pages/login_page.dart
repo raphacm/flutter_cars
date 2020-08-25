@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class LoginPage extends StatelessWidget {
   final _controllerLogin = TextEditingController();
   final _controllerPassword = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -16,27 +16,36 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _body() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      child: ListView(
-        children: [
-          _textFormField("Login", "Type your login",
-              callback: (value) => print(value), controller: _controllerLogin),
-          SizedBox(
-            height: 20,
-          ),
-          _textFormField("Password", "Type your password",
+    return Form(
+      key: _formKey,
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: ListView(
+          children: [
+            _textFormField("Login", "Type your login",
+                callback: (value) => print(value),
+                controller: _controllerLogin,
+                validator: (text) => _validateLoginField(text)),
+            SizedBox(
+              height: 20,
+            ),
+            _textFormField(
+              "Password",
+              "Type your password",
               isPassword: true,
               callback: (value) => print(value),
-              controller: _controllerPassword),
-          SizedBox(
-            height: 20,
-          ),
-          _button(
-            "Login",
-            _handleLoginClick,
-          )
-        ],
+              controller: _controllerPassword,
+              validator: (text) => _validatePasswordField(text),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            _button(
+              "Login",
+              _handleLoginClick,
+            )
+          ],
+        ),
       ),
     );
   }
@@ -45,11 +54,31 @@ class LoginPage extends StatelessWidget {
     var login = _controllerLogin.text;
     var password = _controllerPassword.text;
 
-    if (login.isNotEmpty && password.isNotEmpty) {
-      print("Your login is $login and password is $password");
-    } else {
-      print("You should fill out all informations");
+    bool formOk = _formKey.currentState.validate();
+
+    if (!formOk) {
+      return;
     }
+
+    print("Your login is $login and password is $password");
+  }
+
+  String _validateLoginField(String text) {
+    if (text.isEmpty) {
+      return "This field can't be null";
+    }
+    return null;
+  }
+
+  String _validatePasswordField(String text) {
+    if (text.trim().isEmpty) {
+      return "This field can't be null";
+    }
+
+    if (text.length < 4) {
+      return "Password must be greater than 3";
+    }
+    return null;
   }
 
   TextFormField _textFormField(
@@ -58,10 +87,12 @@ class LoginPage extends StatelessWidget {
     TextEditingController controller,
     bool isPassword = false,
     Function callback,
+    FormFieldValidator<String> validator,
   }) {
     return TextFormField(
       controller: controller,
       onChanged: (value) => callback(value),
+      validator: validator,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
