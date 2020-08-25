@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/utils/validator.dart';
+import 'package:flutter_cars/widgets/button/app_button.dart';
+import 'package:flutter_cars/widgets/form/app_formField.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,13 +10,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _controllerLogin = TextEditingController();
-
   final _controllerPassword = TextEditingController();
-
   final _formKey = GlobalKey<FormState>();
-
-  final _focusLogin = FocusNode();
-
   final _focusPassword = FocusNode();
 
   @override
@@ -39,91 +36,38 @@ class _LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.all(16),
         child: ListView(
           children: [
-            _textFormField(
+            AppFormField(
               "Login",
               "Type your login",
               callback: (value) => print(value),
               controller: _controllerLogin,
               validator: (text) => validateLoginField(text),
-              inputType: TextInputType.emailAddress,
+              keyboardType: TextInputType.emailAddress,
               nextFocus: _focusPassword,
             ),
             SizedBox(
               height: 20,
             ),
-            _textFormField(
+            AppFormField(
               "Password",
               "Type your password",
               isPassword: true,
               callback: (value) => print(value),
               controller: _controllerPassword,
               validator: (text) => validatePasswordField(text),
-              inputType: TextInputType.number,
-              inputAction: TextInputAction.go,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.go,
               focusNode: _focusPassword,
             ),
             SizedBox(
               height: 20,
             ),
-            _button(
+            AppButton(
               "Login",
               _handleLoginClick,
             )
           ],
         ),
-      ),
-    );
-  }
-
-  TextFormField _textFormField(
-    String label,
-    String hint, {
-    TextEditingController controller,
-    bool isPassword = false,
-    Function callback,
-    FormFieldValidator<String> validator,
-    TextInputType inputType,
-    TextInputAction inputAction,
-    FocusNode focusNode,
-    FocusNode nextFocus,
-  }) {
-    return TextFormField(
-      controller: controller,
-      onChanged: (value) => callback(value),
-      validator: validator,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-      ),
-      obscureText: isPassword,
-      keyboardType: inputType,
-      textInputAction: inputAction,
-      focusNode: focusNode,
-      onFieldSubmitted: (String text) {
-        if (nextFocus != null) {
-          FocusScope.of(context).requestFocus(_focusPassword);
-        }
-      },
-    );
-  }
-
-  Container _button(
-    String label,
-    Function onPressed, {
-    Color color = Colors.blue,
-  }) {
-    return Container(
-      height: 46,
-      child: RaisedButton(
-        color: color,
-        child: Text(
-          label,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-          ),
-        ),
-        onPressed: onPressed,
       ),
     );
   }
