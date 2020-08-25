@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cars/utils/validator.dart';
 
 class LoginPage extends StatelessWidget {
   final _controllerLogin = TextEditingController();
@@ -25,7 +26,7 @@ class LoginPage extends StatelessWidget {
             _textFormField("Login", "Type your login",
                 callback: (value) => print(value),
                 controller: _controllerLogin,
-                validator: (text) => _validateLoginField(text)),
+                validator: (text) => validateLoginField(text)),
             SizedBox(
               height: 20,
             ),
@@ -35,7 +36,7 @@ class LoginPage extends StatelessWidget {
               isPassword: true,
               callback: (value) => print(value),
               controller: _controllerPassword,
-              validator: (text) => _validatePasswordField(text),
+              validator: (text) => validatePasswordField(text),
             ),
             SizedBox(
               height: 20,
@@ -63,24 +64,6 @@ class LoginPage extends StatelessWidget {
     print("Your login is $login and password is $password");
   }
 
-  String _validateLoginField(String text) {
-    if (text.isEmpty) {
-      return "This field can't be null";
-    }
-    return null;
-  }
-
-  String _validatePasswordField(String text) {
-    if (text.trim().isEmpty) {
-      return "This field can't be null";
-    }
-
-    if (text.length < 4) {
-      return "Password must be greater than 3";
-    }
-    return null;
-  }
-
   TextFormField _textFormField(
     String label,
     String hint, {
@@ -88,6 +71,7 @@ class LoginPage extends StatelessWidget {
     bool isPassword = false,
     Function callback,
     FormFieldValidator<String> validator,
+    TextInputType inputType,
   }) {
     return TextFormField(
       controller: controller,
@@ -98,6 +82,7 @@ class LoginPage extends StatelessWidget {
         hintText: hint,
       ),
       obscureText: isPassword,
+      keyboardType: inputType,
     );
   }
 
